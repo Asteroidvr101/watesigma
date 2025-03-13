@@ -13,7 +13,7 @@ def authjh():
 
 @app.route("/", methods=["POST", "GET"])
 def no():
-    return "yesnt"
+    return "Wassup Fucking Skidder :sob:"
 
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
