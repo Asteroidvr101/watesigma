@@ -3,8 +3,8 @@ import random
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-title = "7AF94"  # Your PlayFab Title ID
-secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7"  # Your PlayFab secret key
+title = "1B1323"  # Your PlayFab Title ID
+secretkey = "MRM3S8KXDZW61J3Y9Z6R3N8HHJ7BJD8ZXJSG7WDJFEDETXTS7C"  # Your PlayFab secret key
 coems = {}  # Cache for PlayFab IDs
 
 def authjh():
