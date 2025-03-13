@@ -115,7 +115,6 @@ def cfbn():
     if code not in BadNames:result = 0
     else: result = 2
     return jsonify({"Message":"the name thingy worked!","Name":name,"Result":result})
-    return jsonify({"Message":"the code thingy worked?","Code":code,"Result":result})
 
 @app.route("/gaa", methods=["POST", "GET"])
 def gaa():
