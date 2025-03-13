@@ -20,6 +20,7 @@ def PlayFabAuthentication():
     data = request.get_json()
     CustomId = data.get("CustomId", "Null")
 
+    # Authenticate with PlayFab
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
@@ -33,6 +34,7 @@ def PlayFabAuthentication():
     )
 
     if BLAH.status_code == 200:
+        # Successful Auth
         jsontypeshi = BLAH.json()
         goodjson = jsontypeshi.get("data")
         PlayFabId = goodjson.get("PlayFabId")
@@ -57,7 +59,7 @@ def PlayFabAuthentication():
                 # Handle the ban case, inform the user they are banned
                 return jsonify({"Message": ban_info.get("message")}), 403
 
-        # If not banned, proceed with normal flow
+        # If not banned, proceed as normal
         return jsonify({
             "PlayFabId": PlayFabId,
             "SessionTicket": SessionTicket,
