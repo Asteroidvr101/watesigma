@@ -18,13 +18,7 @@ def no():
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
     data = request.get_json()
-
-    print(data)
-
     CustomId = data.get("CustomId", "Null")
-    Nonce = data.get("Nonce", "Null")
-    OculusId = data.get("OculusId", "Null")
-    Platform = data.get("Platform", "Null")
 
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
@@ -39,65 +33,39 @@ def PlayFabAuthentication():
     )
 
     if BLAH.status_code == 200:
-        print("Successful login!")
         jsontypeshi = BLAH.json()
         goodjson = jsontypeshi.get("data")
         PlayFabId = goodjson.get("PlayFabId")
         SessionTicket = goodjson.get("SessionTicket")
-        Entity = goodjson.get("EntityToken")
-        EntityToken = Entity["EntityToken"]
-        EntityId = Entity["Entity"]["Id"]
-        EntityType = Entity["Entity"]["Type"]
 
-        # Check if the user is banned
-        banned = False  # Placeholder for a real check
-        EASports = requests.post(
-            url=f"https://{title}.playfabapi.com/Client/GetPlayerStatistics",
+        # Call the Cloud Script to check for bans
+        ban_check_response = requests.post(
+            url=f"https://{title}.playfabapi.com/Server/ExecuteCloudScript",
+            json={
+                "PlayFabId": PlayFabId,
+                "FunctionName": "checkPlayerBanStatus"
+            },
             headers={
                 "content-type": "application/json",
-                "x-authorization": SessionTicket
+                "X-SecretKey": secretkey
             }
         )
 
-        if EASports.status_code == 200:
-            stats = EASports.json().get("data", {}).get("Statistics", [])
-            # Here you would check if any statistic indicates a ban
-            if any(stat["StatName"] == "Banned" and stat["Value"] == 1 for stat in stats):
-                banned = True
+        if ban_check_response.status_code == 200:
+            ban_info = ban_check_response.json().get("data")
+            if ban_info.get("status") == "banned":
+                # Handle the ban case, inform the user they are banned
+                return jsonify({"Message": ban_info.get("message")}), 403
 
-        # Store user status in the cache
-        coems[PlayFabId] = {"is_banned": banned}
-
-        if banned:
-            return jsonify({"Message": "You are banned from the game."}), 403
-
-        # If not banned, allow them to join the lobby
+        # If not banned, proceed with normal flow
         return jsonify({
             "PlayFabId": PlayFabId,
             "SessionTicket": SessionTicket,
-            "EntityToken": EntityToken,
-            "EntityId": EntityId,
-            "EntityType": EntityType,
-            "LobbyMessage": "Successfully joined the lobby."  # Message about joining the lobby
+            "Message": "Successfully logged in!"
         }), 200
 
     else:
-        try:
-            error_info = BLAH.json().get("error")
-            if error_info and "banned" in error_info.get("message", "").lower():
-                # If banned, cache this information
-                coems[CustomId] = {"is_banned": True}
-                return jsonify({
-                    "Message": "You are banned from the game.",
-                    "Reason": error_info.get("message")
-                }), 403
-            else:
-                return jsonify({
-                    "Message": "Authentication failed.",
-                    "Reason": error_info.get("message", "Unknown error.")
-                }), 403
-        except (ValueError, KeyError) as e:
-            return jsonify({"Message": "An error occurred while processing the response."}), 500
+        return jsonify({"Message": "Authentication failed."}), 403
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
