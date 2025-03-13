@@ -90,30 +90,6 @@ def PlayFabAuthentication():
                 'Message': error_message
             }), login_request.status_code
 
-        if linking_response.status_code == 200:
-            return jsonify({
-                "PlayFabId": PlayFabId,
-                "SessionTicket": SessionTicket,
-                "EntityToken": EntityToken,
-                "EntityId": EntityId,
-                "EntityType": EntityType,
-                "IsBanned": False
-            }), 200
-        else:
-            return jsonify({"Message": "Failed linking Custom ID"}), 400
-    else:
-        # Handle the ban error
-        errorDetails = login_request.json().get('errorDetails')
-        if errorDetails:
-            firstBan = next(iter(errorDetails))
-            return jsonify({
-                "BanMessage": str(firstBan),
-                "BanExpirationTime": str(errorDetails[firstBan]),
-                "IsBanned": True
-            }), 403
-        else:
-            return jsonify({"Message": "Authentication failed."}), 403
-
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
     getjson = request.get_json()
