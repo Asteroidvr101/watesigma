@@ -101,6 +101,7 @@ def real():
 @app.route("/cbfn", methods=["POST","GET"])
 def cfbn():
     name = request.args.get('name')
+    code = request.args.get('code')
     BadNames = [
         "KKK", "PENIS", "NIGG", "NEG", "NIGA", "MONKEYSLAVE", "SLAVE", "FAG", 
         "NAGGI", "TRANNY", "QUEER", "KYS", "DICK", "PUSSY", "VAGINA", "BIGBLACKCOCK", 
@@ -111,8 +112,10 @@ def cfbn():
         "H4PKY", "MOSA", "NIGGER", "NIGGA", "IHATENIGGERS", "@everyone", "TTT"
     ];
     if name not in BadNames:result = 0
+    if code not in BadNames:result = 0
     else: result = 2
     return jsonify({"Message":"the name thingy worked!","Name":name,"Result":result})
+    return jsonify({"Message":"the code thingy worked?","Code":code,"Result":result})
 
 @app.route("/gaa", methods=["POST", "GET"])
 def gaa():
