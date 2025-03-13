@@ -18,7 +18,7 @@ def no():
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
     data = request.get_json()
-
+    
     print(data)
 
     CustomId: str = data.get("CustomId", "Null")
@@ -27,8 +27,7 @@ def PlayFabAuthentication():
     Platform: str = data.get("Platform", "Null")
 
     BLAH = requests.post(
-        url=
-f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
+        url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
             "ServerCustomId": CustomId,
             "CreateAccount": True
@@ -36,7 +35,9 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         headers={
             "content-type": "application/json",
             "x-secretkey": secretkey
-        })
+        }
+    )
+
     if BLAH.status_code == 200: 
         print("successful login chat!")
         jsontypeshi = BLAH.json()
@@ -68,7 +69,9 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
             headers={
                 "content-type": "application/json",
                 "x-authorization": SessionTicket
-            })
+            }
+        )
+        
         if EASports.status_code == 200:
             print("Ok, linked it ig")
             return jsonify({
@@ -79,9 +82,24 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
                 "EntityType": EntityType
             }), 200
         else:
-            return jsonify({"Message": "Failed"}), 400
+            return jsonify({"Message": "Failed to link Custom ID."}), 400
     else:
-        return jsonify({"Message": "More likely banned"}), 403
+        try:
+            error_info = BLAH.json().get("error")  # Get the details of the error if available
+            if error_info and "banned" in error_info.get("message", "").lower():
+                # If the error message contains information about a ban
+                return jsonify({
+                    "Message": "You are banned from the game.",
+                    "Reason": error_info.get("message")
+                }), 403
+            else:
+                return jsonify({
+                    "Message": "Authentication failed.",
+                    "Reason": error_info.get("message", "Unknown error.")
+                }), 403
+        except (ValueError, KeyError) as e:
+            # Log the parsing error if needed
+            return jsonify({"Message": "An error occurred while processing the response."}), 500
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
