@@ -37,58 +37,6 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
             "content-type": "application/json",
             "x-secretkey": secretkey
         })
-    if login_request.status_code == 200:
-        data = login_request.json().get("data")
-        session_ticket = data.get("SessionTicket")
-        entity_token = data.get("EntityToken").get("EntityToken")
-        playfab_id = data.get("PlayFabId")
-        entity_type = data.get("EntityToken").get("Entity").get("Type")
-        entity_id = data.get("EntityToken").get("Entity").get("Id")
-
-        link_response = requests.post(
-            url=f"https://{settings.TitleId}.playfabapi.com/Server/LinkServerCustomId",
-            json={
-                "ForceLink": True,
-                "PlayFabId": playfab_id,
-                "ServerCustomId": rjson.get("CustomId"),
-            },
-            headers=settings.get_auth_headers()
-        ).json()
-
-        return jsonify({
-            "PlayFabId": playfab_id,
-            "SessionTicket": session_ticket,
-            "EntityToken": entity_token,
-            "EntityId": entity_id,
-            "EntityType": entity_type
-        }), 200
-    else:
-        if login_request.status_code == 403:
-            ban_info = login_request.json()
-            if ban_info.get('errorCode') == 1002:
-                ban_message = ban_info.get('errorMessage', "No ban message provided.")
-                ban_details = ban_info.get('errorDetails', {})
-                ban_expiration_key = next(iter(ban_details.keys()), None)
-                ban_expiration_list = ban_details.get(ban_expiration_key, [])
-                ban_expiration = ban_expiration_list[0] if len(ban_expiration_list) > 0 else "No expiration date provided."
-                print(ban_info)
-                return jsonify({
-                    'BanMessage': ban_expiration_key,
-                    'BanExpirationTime': ban_expiration
-                }), 403
-            else:
-                error_message = ban_info.get('errorMessage', 'Forbidden without ban information.')
-                return jsonify({
-                    'Error': 'PlayFab Error',
-                    'Message': error_message
-                }), 403
-        else:
-            error_info = login_request.json()
-            error_message = error_info.get('errorMessage', 'An error occurred.')
-            return jsonify({
-                'Error': 'PlayFab Error',
-                'Message': error_message
-            }), login_request.status_code
     if BLAH.status_code == 200: 
         print("successful login chat!")
         jsontypeshi = BLAH.json()
@@ -133,7 +81,25 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         else:
             return jsonify({"Message": "Failed"}), 400
     else:
-        return jsonify({"Message": "More likely banned"}), 403
+        if BLAH.status_code == 403:
+            ban_info = BLAH.json()
+            if ban_info.get('errorCode') == 1002:
+                ban_message = ban_info.get('errorMessage', "No ban message provided.")
+                ban_details = ban_info.get('errorDetails', {})
+                ban_expiration_key = next(iter(ban_details.keys()), None)
+                ban_expiration_list = ban_details.get(ban_expiration_key, [])
+                ban_expiration = ban_expiration_list[0] if len(ban_expiration_list) > 0 else "No expiration date provided."
+                print(ban_info)
+                return jsonify({
+                    'BanMessage': ban_expiration_key,
+                    'BanExpirationTime': ban_expiration
+                }), 403
+            else:
+                error_message = ban_info.get('errorMessage', 'Forbidden without ban information.')
+                return jsonify({
+                    'Error': 'PlayFab Error',
+                    'Message': error_message
+                }), 403
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
