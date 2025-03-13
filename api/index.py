@@ -18,13 +18,13 @@ def no():
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
     data = request.get_json()
-    
+
     print(data)
 
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
+    CustomId = data.get("CustomId", "Null")
+    Nonce = data.get("Nonce", "Null")
+    OculusId = data.get("OculusId", "Null")
+    Platform = data.get("Platform", "Null")
 
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
@@ -38,8 +38,8 @@ def PlayFabAuthentication():
         }
     )
 
-    if BLAH.status_code == 200: 
-        print("successful login chat!")
+    if BLAH.status_code == 200:
+        print("Successful login!")
         jsontypeshi = BLAH.json()
         goodjson = jsontypeshi.get("data")
         PlayFabId = goodjson.get("PlayFabId")
@@ -49,45 +49,44 @@ def PlayFabAuthentication():
         EntityId = Entity["Entity"]["Id"]
         EntityType = Entity["Entity"]["Type"]
 
-        data = [
-            PlayFabId,
-            SessionTicket,
-            Entity,
-            EntityToken,
-            EntityId,
-            Nonce,
-            OculusId,
-            Platform
-        ]
-
+        # Check if the user is banned
+        banned = False  # Placeholder for a real check
         EASports = requests.post(
-            url=f"https://{title}.playfabapi.com/Client/LinkCustomID",
-            json={
-                "CustomID": CustomId,
-                "ForceLink": True
-            },
+            url=f"https://{title}.playfabapi.com/Client/GetPlayerStatistics",
             headers={
                 "content-type": "application/json",
                 "x-authorization": SessionTicket
             }
         )
-        
+
         if EASports.status_code == 200:
-            print("Ok, linked it ig")
-            return jsonify({
-                "PlayFabId": PlayFabId,
-                "SessionTicket": SessionTicket,
-                "EntityToken": EntityToken,
-                "EntityId": EntityId,
-                "EntityType": EntityType
-            }), 200
-        else:
-            return jsonify({"Message": "Failed to link Custom ID."}), 400
+            stats = EASports.json().get("data", {}).get("Statistics", [])
+            # Here you would check if any statistic indicates a ban
+            if any(stat["StatName"] == "Banned" and stat["Value"] == 1 for stat in stats):
+                banned = True
+
+        # Store user status in the cache
+        coems[PlayFabId] = {"is_banned": banned}
+
+        if banned:
+            return jsonify({"Message": "You are banned from the game."}), 403
+
+        # If not banned, allow them to join the lobby
+        return jsonify({
+            "PlayFabId": PlayFabId,
+            "SessionTicket": SessionTicket,
+            "EntityToken": EntityToken,
+            "EntityId": EntityId,
+            "EntityType": EntityType,
+            "LobbyMessage": "Successfully joined the lobby."  # Message about joining the lobby
+        }), 200
+
     else:
         try:
-            error_info = BLAH.json().get("error")  # Get the details of the error if available
+            error_info = BLAH.json().get("error")
             if error_info and "banned" in error_info.get("message", "").lower():
-                # If the error message contains information about a ban
+                # If banned, cache this information
+                coems[CustomId] = {"is_banned": True}
                 return jsonify({
                     "Message": "You are banned from the game.",
                     "Reason": error_info.get("message")
@@ -98,17 +97,7 @@ def PlayFabAuthentication():
                     "Reason": error_info.get("message", "Unknown error.")
                 }), 403
         except (ValueError, KeyError) as e:
-            # Log the parsing error if needed
             return jsonify({"Message": "An error occurred while processing the response."}), 500
-                playfab_id = request.json.get("PlayFabId")
-
-    # Check if the user is in the cache and if they are banned
-    if playfab_id in coems:
-        if coems[playfab_id].get('is_banned', False):
-            return jsonify({"Message": "You are banned from joining the lobby."}), 403
-
-    # If they are not banned, allow them to join the lobby
-    return jsonify({"Message": "Successfully joined the lobby."}), 200
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
