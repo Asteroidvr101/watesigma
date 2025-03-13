@@ -3,12 +3,13 @@ import random
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-title = "7AF94"  # Your PlayFab Title ID
-secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7"  # Your PlayFab secret key
-coems = {}  # Cache for PlayFab IDs
+title = "7AF94"
+secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7" #idk why it said secfret
+coems = {} # bro why does this have ;
+
 
 def authjh():
-    return {"content-type": "application/json", "X-SecretKey": secretkey}
+    return {"content-type": "application/json","X-SecretKey": secretkey}
 
 @app.route("/", methods=["POST", "GET"])
 def no():
@@ -17,16 +18,17 @@ def no():
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
     data = request.get_json()
+
     print(data)
 
-    CustomId = data.get("CustomId", "Null")
-    Nonce = data.get("Nonce", "Null")
-    OculusId = data.get("OculusId", "Null")
-    Platform = data.get("Platform", "Null")
+    CustomId: str = data.get("CustomId", "Null")
+    Nonce: str = data.get("Nonce", "Null")
+    OculusId: str = data.get("OculusId", "Null")
+    Platform: str = data.get("Platform", "Null")
 
-    # Authenticate with PlayFab
-    login_request = requests.post(
-        url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
+    BLAH = requests.post(
+        url=
+f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
             "ServerCustomId": CustomId,
             "CreateAccount": True
@@ -34,61 +36,52 @@ def PlayFabAuthentication():
         headers={
             "content-type": "application/json",
             "x-secretkey": secretkey
-        }
-    )
+        })
+    if BLAH.status_code == 200: 
+        print("successful login chat!")
+        jsontypeshi = BLAH.json()
+        goodjson = jsontypeshi.get("data")
+        PlayFabId = goodjson.get("PlayFabId")
+        SessionTicket = goodjson.get("SessionTicket")
+        Entity = goodjson.get("EntityToken")
+        EntityToken = Entity["EntityToken"]
+        EntityId = Entity["Entity"]["Id"]
+        EntityType = Entity["Entity"]["Type"]
 
-    if login_request.status_code == 200:
-        data = login_request.json().get("data")
-        session_ticket = data.get("SessionTicket")
-        entity_token = data.get("EntityToken").get("EntityToken")
-        playfab_id = data.get("PlayFabId")
-        entity_type = data.get("EntityToken").get("Entity").get("Type")
-        entity_id = data.get("EntityToken").get("Entity").get("Id")
+        data = [
+            PlayFabId,
+            SessionTicket,
+            Entity,
+            EntityToken,
+            EntityId,
+            Nonce,
+            OculusId,
+            Platform
+        ]
 
-        link_response = requests.post(
-            url=f"https://{settings.TitleId}.playfabapi.com/Server/LinkServerCustomId",
+        EASports = requests.post(
+            url=f"https://{title}.playfabapi.com/Client/LinkCustomID",
             json={
-                "ForceLink": True,
-                "PlayFabId": playfab_id,
-                "ServerCustomId": rjson.get("CustomId"),
+                "CustomID": CustomId,
+                "ForceLink": True
             },
-            headers=settings.get_auth_headers()
-        ).json()
-
-        return jsonify({
-            "PlayFabId": playfab_id,
-            "SessionTicket": session_ticket,
-            "EntityToken": entity_token,
-            "EntityId": entity_id,
-            "EntityType": entity_type
-        }), 200
-    else:
-        if login_request.status_code == 403:
-            ban_info = login_request.json()
-            if ban_info.get('errorCode') == 1002:
-                ban_message = ban_info.get('errorMessage', "No ban message provided.")
-                ban_details = ban_info.get('errorDetails', {})
-                ban_expiration_key = next(iter(ban_details.keys()), None)
-                ban_expiration_list = ban_details.get(ban_expiration_key, [])
-                ban_expiration = ban_expiration_list[0] if len(ban_expiration_list) > 0 else "No expiration date provided."
-                print(ban_info)
-                return jsonify({
-                    'BanMessage': ban_expiration_key,
-                    'BanExpirationTime': ban_expiration
-                }), 403
-            else:
-                error_message = ban_info.get('errorMessage', 'Forbidden without ban information.')
-                return jsonify({
-                    'Error': 'PlayFab Error',
-                    'Message': error_message
-                }), 403
-        else:
-            error_info = login_request.json()
-            error_message = error_info.get('errorMessage', 'An error occurred.')
+            headers={
+                "content-type": "application/json",
+                "x-authorization": SessionTicket
+            })
+        if EASports.status_code == 200:
+            print("Ok, linked it ig")
             return jsonify({
-                'Error': 'PlayFab Error',
-                'Message': error_message
-            }), login_request.status_code
+                "PlayFabId": PlayFabId,
+                "SessionTicket": SessionTicket,
+                "EntityToken": EntityToken,
+                "EntityId": EntityId,
+                "EntityType": EntityType
+            }), 200
+        else:
+            return jsonify({"Message": "Failed"}), 400
+    else:
+        return jsonify({"Message": "More likely banned"}), 403
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
@@ -102,9 +95,10 @@ def real():
     blah = {"X-SecretKey": secretkey, "Content-Type": "application/json"}
     e = requests.post(url=realshit, headers=blah)
     sigmarizzauth = e.json().get("data", "").get("Data", "")
+
     return jsonify(sigmarizzauth)
 
-@app.route("/cbfn", methods=["POST", "GET"])
+@app.route("/cbfn", methods=["POST","GET"])
 def cfbn():
     name = request.args.get('name')
     BadNames = [
@@ -115,9 +109,10 @@ def cfbn():
         "ELLIOT", "JMAN", "K9", "NIGGA", "TTTPIG", "NICKER", "NICKA", 
         "REEL", "NII", "@here", "!", " ", "JMAN", "PPPTIG", "CLEANINGBOT", "JANITOR", "K9", 
         "H4PKY", "MOSA", "NIGGER", "NIGGA", "IHATENIGGERS", "@everyone", "TTT"
-    ]
-    result = 0 if name not in BadNames else 2
-    return jsonify({"Message": "the name thingy worked!", "Name": name, "Result": result})
+    ];
+    if name not in BadNames:result = 0
+    else: result = 2
+    return jsonify({"Message":"the name thingy worked!","Name":name,"Result":result})
 
 @app.route("/gaa", methods=["POST", "GET"])
 def gaa():
@@ -127,11 +122,11 @@ def gaa():
 @app.route("/saa", methods=["POST", "GET"])
 def saa():
     getjson = request.get_json()["FunctionResult"]
-    return jsonify(getjson)
+    return jsonify(getjson) #qwizx did this on purpose bro i swear
 
 @app.route("/grn", methods=["POST", "GET"])
 def grn():
-    return jsonify({"result": f"pluh!{random.randint(1000, 9999)}"})
+    return jsonify({"result": f"pluh!{randoms.randint(1000, 9999)}"})
 
 @app.route("/api/photon", methods=["POST"])
 def photonauth():
@@ -144,28 +139,24 @@ def photonauth():
     AppVersion = getjson.get("AppVersion")
     Token = getjson.get("Token")
     Username = getjson.get("username")
-
     if Nonce is None:
         return jsonify({'Error': 'Bad request', 'Message': 'Not Authenticated!'}), 304 
-    if TitleId != '7AF94':
+    if TitleId != '910A2':
         return jsonify({'Error': 'Bad request', 'Message': 'Invalid titleid!'}), 403
     if Platform != 'Quest':
         return jsonify({'Error': 'Bad request', 'Message': 'Invalid platform!'}), 403
-
-    return jsonify({
-        "ResultCode": 1, 
-        "StatusCode": 200, 
-        "Message": "authed with photon",
+    return jsonify({"ResultCode":1, "StatusCode":200, "Message":"authed with photon",
         "Result": 0,
         "UserId": UserId,
-        "AppId": TitleId,
-        "AppVersion": AppVersion,
-        "Ticket": Ticket,
-        "Token": Token,
-        "Nonce": Nonce,
-        "Platform": Platform,
-        "Username": Username
-    }), 200
+        "AppId":TitleId,
+        "AppVersion":AppVersion,
+        "Ticket":Ticket,
+        "Token":Token,
+        "Nonce":Nonce,
+        "Platform":Platform,
+        "Username":Username}), 200
+
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+  app.run(host="0.0.0.0", port=80)
