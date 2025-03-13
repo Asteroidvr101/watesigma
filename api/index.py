@@ -100,6 +100,15 @@ def PlayFabAuthentication():
         except (ValueError, KeyError) as e:
             # Log the parsing error if needed
             return jsonify({"Message": "An error occurred while processing the response."}), 500
+                playfab_id = request.json.get("PlayFabId")
+
+    # Check if the user is in the cache and if they are banned
+    if playfab_id in coems:
+        if coems[playfab_id].get('is_banned', False):
+            return jsonify({"Message": "You are banned from joining the lobby."}), 403
+
+    # If they are not banned, allow them to join the lobby
+    return jsonify({"Message": "Successfully joined the lobby."}), 200
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
