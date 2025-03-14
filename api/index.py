@@ -116,6 +116,26 @@ def real():
 
     return jsonify(sigmarizzauth)
 
+@app.route("/api/ConsumeOculusIAP", methods=["POST"])
+def consume_oculus_iap():
+    rjson = request.get_json()
+
+    access_token = rjson.get("userToken")
+    user_id = rjson.get("userID")
+    nonce = rjson.get("nonce")
+    sku = rjson.get("sku")
+
+    response = requests.post(
+        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={settings.ApiKey}",
+        headers={"content-type": "application/json"}
+    )
+
+    if response.json().get("success"):
+        return jsonify({"result": True})
+    else:
+        return jsonify({"error": True})
+
+
 @app.route("/api/CheckForBadName", methods=["POST"])
 def check_for_bad_name():
     rjson = request.get_json().get("FunctionResult")
