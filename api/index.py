@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 title = "7AF94"
 secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7" #idk why it said secfret
-ApiKey = "OC|9837791239572874|4523778edb61de7362b2843a78428242" #idk why it said secfret
+setting.ApiKey = "OC|9837791239572874|4523778edb61de7362b2843a78428242" #idk why it said secfret
 coems = {} # bro why does this have ;
 
 
@@ -127,7 +127,7 @@ def consume_oculus_iap():
     sku = rjson.get("sku")
 
     response = requests.post(
-        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={ApiKey}",
+        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={setting.ApiKey}",
         headers={"content-type": "application/json"}
     )
 
