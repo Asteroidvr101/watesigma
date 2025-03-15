@@ -3,25 +3,20 @@ import random
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-title = "7AF94"
-secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7" #idk why it said secfret
-coems = {} # bro why does this have ;
-
+title = ""
+secretkey = ""
+coems = {}
+banned_users = {}
 
 def authjh():
-    return {"content-type": "application/json","X-SecretKey": secretkey}
+    return {"content-type": "application/json", "X-SecretKey": secretkey}
 
 @app.route("/", methods=["POST", "GET"])
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['POST'])
+@app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
-    AppId: str = data.get("AppId", "Null")
     # Request to PlayFab Login
     login_request = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
@@ -82,7 +77,6 @@ def PlayFabAuthentication():
                 'Message': error_message
             }), login_request.status_code
 
-
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
     getjson = request.get_json()
@@ -95,24 +89,25 @@ def real():
     blah = {"X-SecretKey": secretkey, "Content-Type": "application/json"}
     e = requests.post(url=realshit, headers=blah)
     sigmarizzauth = e.json().get("data", "").get("Data", "")
-
     return jsonify(sigmarizzauth)
 
-@app.route("/cbfn", methods=["POST","GET"])
+@app.route("/cbfn", methods=["POST", "GET"])
 def cfbn():
     name = request.args.get('name')
     BadNames = [
-        "KKK", "PENIS", "NIGG", "NEG", "NIGA", "MONKEYSLAVE", "SLAVE", "FAG", 
-        "NAGGI", "TRANNY", "QUEER", "KYS", "DICK", "PUSSY", "VAGINA", "BIGBLACKCOCK", 
-        "DILDO", "HITLER", "KKX", "XKK", "NIGA", "NIGE", "NIG", "NI6", "PORN", 
-        "JEW", "JAXX", "TTTPIG", "SEX", "COCK", "CUM", "FUCK", "PENIS", "DICK", 
-        "ELLIOT", "JMAN", "K9", "NIGGA", "TTTPIG", "NICKER", "NICKA", 
-        "REEL", "NII", "@here", "!", " ", "JMAN", "PPPTIG", "CLEANINGBOT", "JANITOR", "K9", 
+        "KKK", "PENIS", "NIGG", "NEG", "NIGA", "MONKEYSLAVE", "SLAVE", "FAG",
+        "NAGGI", "TRANNY", "QUEER", "KYS", "DICK", "PUSSY", "VAGINA", "BIGBLACKCOCK",
+        "DILDO", "HITLER", "KKX", "XKK", "NIGA", "NIGE", "NIG", "NI6", "PORN",
+        "JEW", "JAXX", "TTTPIG", "SEX", "COCK", "CUM", "FUCK", "PENIS", "DICK",
+        "ELLIOT", "JMAN", "K9", "NIGGA", "TTTPIG", "NICKER", "NICKA",
+        "REEL", "NII", "@here", "!", "JMAN", "PPPTIG", "CLEANINGBOT", "JANITOR", "K9",
         "H4PKY", "MOSA", "NIGGER", "NIGGA", "IHATENIGGERS", "@everyone", "TTT"
-    ];
-    if name not in BadNames:result = 0
-    else: result = 2
-    return jsonify({"Message":"the name thingy worked!","Name":name,"Result":result})
+    ]
+    if name not in BadNames:
+        result = 0
+    else:
+        result = 2
+    return jsonify({"Message": "the name thingy worked!", "Name": name, "Result": result})
 
 @app.route("/gaa", methods=["POST", "GET"])
 def gaa():
@@ -122,41 +117,66 @@ def gaa():
 @app.route("/saa", methods=["POST", "GET"])
 def saa():
     getjson = request.get_json()["FunctionResult"]
-    return jsonify(getjson) #qwizx did this on purpose bro i swear
+    return jsonify(getjson)
 
 @app.route("/grn", methods=["POST", "GET"])
 def grn():
-    return jsonify({"result": f"pluh!{randoms.randint(1000, 9999)}"})
-
+    return jsonify({"result": f"pluh!{random.randint(1000, 9999)}"})
 @app.route("/api/photon", methods=["POST"])
 def photonauth():
-    getjson = request.get_json()
-    Ticket = getjson.get("Ticket")
-    Nonce = getjson.get("Nonce")
-    TitleId = getjson.get("AppId")
-    Platform = getjson.get("Platform")
-    UserId = getjson.get("UserId")
-    AppVersion = getjson.get("AppVersion")
-    Token = getjson.get("Token")
-    Username = getjson.get("username")
-    if Nonce is None:
-        return jsonify({'Error': 'Bad request', 'Message': 'Not Authenticated!'}), 304 
-    if TitleId != '910A2':
-        return jsonify({'Error': 'Bad request', 'Message': 'Invalid titleid!'}), 403
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "Bad Request", "Message": "Missing JSON body"}), 400
+
+    Ticket = data.get("Ticket")
+    Nonce = data.get("Nonce")
+    TitleId = data.get("AppId")
+    Platform = data.get("Platform")
+    UserId = data.get("UserId")
+    AppVersion = data.get("AppVersion")
+    Token = data.get("Token")
+    Username = data.get("Username")
+
+    if not all([Ticket, Nonce, TitleId, Platform, UserId, AppVersion, Token, Username]):
+        return jsonify({"Error": "Bad Request", "Message": "Missing one or more required fields"}), 400
+
     if Platform != 'Quest':
-        return jsonify({'Error': 'Bad request', 'Message': 'Invalid platform!'}), 403
-    return jsonify({"ResultCode":1, "StatusCode":200, "Message":"authed with photon",
+        return jsonify({
+            "Error": "Invalid Platform",
+            "Message": "Photon authentication is only supported for Quest platform"
+        }), 403
+
+    if Platform == "Steam":
+        return jsonify({
+            "Error": "Unsupported Platform",
+            "Message": "Unable to authenticate your Oculus account from Steam. Please try again on Quest."
+        }), 403
+
+    if TitleId != title:
+        return jsonify({
+            "Error": "Invalid AppId",
+            "Message": f"Invalid TitleId provided. Expected {title}, but got {TitleId}"
+        }), 403
+
+    print(f"Authentication request received from UserId: {UserId}, Platform: {Platform}, AppVersion: {AppVersion}, Username: {Username}")
+
+    response = {
+        "ResultCode": 1,
+        "StatusCode": 200,
+        "Message": "Authenticated with Photon successfully",
         "Result": 0,
         "UserId": UserId,
-        "AppId":TitleId,
-        "AppVersion":AppVersion,
-        "Ticket":Ticket,
-        "Token":Token,
-        "Nonce":Nonce,
-        "Platform":Platform,
-        "Username":Username}), 200
+        "AppId": TitleId,
+        "AppVersion": AppVersion,
+        "Ticket": Ticket,
+        "Token": Token,
+        "Nonce": Nonce,
+        "Platform": Platform,
+        "Username": Username
+    }
 
-
+    return jsonify(response), 200
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=80)
+    print("Made by Nate")
+    app.run(host="0.0.0.0", port=8080)
