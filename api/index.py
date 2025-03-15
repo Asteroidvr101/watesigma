@@ -16,7 +16,7 @@ def authjh():
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['POST'])
+@app.route('/api/PlayFabAuthentication', methods=['POST', 'GET'])
 def PlayFabAuthentication():
     data = request.get_json()
     data = request.get_json()
