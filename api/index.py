@@ -98,13 +98,6 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
                     'Error': 'PlayFab Error',
                     'Message': error_message
                 }), 403
-        else:
-            error_info = BLAH.json()
-            error_message = error_info.get('errorMessage', 'An error occurred.')
-            return jsonify({
-                'Error': 'PlayFab Error',
-                'Message': error_message
-            }), BLAH.status_code
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
