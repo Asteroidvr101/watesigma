@@ -17,70 +17,46 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
-    data = request.get_json()
-
-    print(data)
-
     CustomId: str = data.get("CustomId", "Null")
     Nonce: str = data.get("Nonce", "Null")
     OculusId: str = data.get("OculusId", "Null")
     Platform: str = data.get("Platform", "Null")
+    AppId: str = data.get("AppId", "Null")
+    # Request to PlayFab Login
+    login_request = requests.post(
+        url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
+        json={"ServerCustomId": CustomId, "CreateAccount": True},
+        headers=authjh()
+    )
 
-    BLAH = requests.post(
-        url=
-f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
-        json={
-            "ServerCustomId": CustomId,
-            "CreateAccount": True
-        },
-        headers={
-            "content-type": "application/json",
-            "x-secretkey": secretkey
-        })
-    if BLAH.status_code == 200: 
-        print("successful login chat!")
-        jsontypeshi = BLAH.json()
-        goodjson = jsontypeshi.get("data")
-        PlayFabId = goodjson.get("PlayFabId")
-        SessionTicket = goodjson.get("SessionTicket")
-        Entity = goodjson.get("EntityToken")
-        EntityToken = Entity["EntityToken"]
-        EntityId = Entity["Entity"]["Id"]
-        EntityType = Entity["Entity"]["Type"]
+    if login_request.status_code == 200:
+        data = login_request.json().get("data")
+        session_ticket = data.get("SessionTicket")
+        entity_token = data.get("EntityToken").get("EntityToken")
+        playfab_id = data.get("PlayFabId")
+        entity_type = data.get("EntityToken").get("Entity").get("Type")
+        entity_id = data.get("EntityToken").get("Entity").get("Id")
 
-        data = [
-            PlayFabId,
-            SessionTicket,
-            Entity,
-            EntityToken,
-            EntityId,
-            Nonce,
-            OculusId,
-            Platform
-        ]
-
-        EASports = requests.post(
-            url=f"https://{title}.playfabapi.com/Client/LinkCustomID",
+        link_response = requests.post(
+            url=f"https://{title}.playfabapi.com/Server/LinkServerCustomId",
             json={
-                "CustomID": CustomId,
-                "ForceLink": True
+                "ForceLink": True,
+                "PlayFabId": playfab_id,
+                "ServerCustomId": CustomId,
             },
-            headers={
-                "content-type": "application/json",
-                "x-authorization": SessionTicket
-            })
-        if EASports.status_code == 200:
-            print("Ok, linked it ig")
-            return jsonify({
-                "PlayFabId": PlayFabId,
-                "SessionTicket": SessionTicket,
-                "EntityToken": EntityToken,
-                "EntityId": EntityId,
-                "EntityType": EntityType
-            }), 200
-        else:
-            if BLAH.status_code == 403:
-            ban_info = BLAH.json()
+            headers=authjh()
+        ).json()
+
+        return jsonify({
+            "PlayFabId": playfab_id,
+            "SessionTicket": session_ticket,
+            "EntityToken": entity_token,
+            "EntityId": entity_id,
+            "EntityType": entity_type
+        }), 200
+    else:
+        if login_request.status_code == 403:
+            ban_info = login_request.json()
             if ban_info.get('errorCode') == 1002:
                 ban_message = ban_info.get('errorMessage', "No ban message provided.")
                 ban_details = ban_info.get('errorDetails', {})
@@ -98,13 +74,14 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
                     'Error': 'PlayFab Error',
                     'Message': error_message
                 }), 403
-            else:
-                error_info = BLAH.json()
-                error_message = error_info.get('errorMessage', 'An error occurred.')
-                return jsonify({
-                    'Error': 'PlayFab Error',
-                    'Message': error_message
-                }), BLAH.status_code
+        else:
+            error_info = login_request.json()
+            error_message = error_info.get('errorMessage', 'An error occurred.')
+            return jsonify({
+                'Error': 'PlayFab Error',
+                'Message': error_message
+            }), login_request.status_code
+
 
 @app.route("/api/CachePlayFabId", methods=["POST"])
 def cpi():
