@@ -38,31 +38,61 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
             "content-type": "application/json",
             "x-secretkey": secretkey
         })
-   if BLAH.status_code == 200:
-        data = BLAH.json().get("data")
-        session_ticket = data.get("SessionTicket")
-        entity_token = data.get("EntityToken").get("EntityToken")
-        playfab_id = data.get("PlayFabId")
-        entity_type = data.get("EntityToken").get("Entity").get("Type")
-        entity_id = data.get("EntityToken").get("Entity").get("Id")
+  
+    BLAH = requests.post(
+        url=
+f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
+        json={
+            "ServerCustomId": CustomId,
+            "CreateAccount": True
+        },
+        headers={
+            "content-type": "application/json",
+            "x-secretkey": secretkey
+        })
+    if BLAH.status_code == 200: 
+        print("successful login chat!")
+        jsontypeshi = BLAH.json()
+        goodjson = jsontypeshi.get("data")
+        PlayFabId = goodjson.get("PlayFabId")
+        SessionTicket = goodjson.get("SessionTicket")
+        Entity = goodjson.get("EntityToken")
+        EntityToken = Entity["EntityToken"]
+        EntityId = Entity["Entity"]["Id"]
+        EntityType = Entity["Entity"]["Type"]
 
-        link_response = requests.post(
-            url=f"https://{settings.titleid}.playfabapi.com/Server/LinkServerCustomId",
+        data = [
+            PlayFabId,
+            SessionTicket,
+            Entity,
+            EntityToken,
+            EntityId,
+            Nonce,
+            OculusId,
+            Platform
+        ]
+
+        EASports = requests.post(
+            url=f"https://{title}.playfabapi.com/Client/LinkCustomID",
             json={
-                "ForceLink": True,
-                "PlayFabId": playfab_id,
-                "ServerCustomId": rjson.get("CustomId"),
+                "CustomID": CustomId,
+                "ForceLink": True
             },
-            headers=settings.get_auth_headers()
-        ).json()
-
-        return jsonify({
-            "PlayFabId": playfab_id,
-            "SessionTicket": session_ticket,
-            "EntityToken": entity_token,
-            "EntityId": entity_id,
-            "EntityType": entity_type
-        }), 200
+            headers={
+                "content-type": "application/json",
+                "x-authorization": SessionTicket
+            })
+        if EASports.status_code == 200:
+            print("Ok, linked it ig")
+            return jsonify({
+                "PlayFabId": PlayFabId,
+                "SessionTicket": SessionTicket,
+                "EntityToken": EntityToken,
+                "EntityId": EntityId,
+                "EntityType": EntityType
+            }), 200
+        else:
+            return jsonify({"Message": "Failed"}), 400
     else:
         if BLAH.status_code == 403:
             ban_info = BLAH.json()
