@@ -79,7 +79,7 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
                 "EntityType": EntityType
             }), 200
         else:
-           if BLAH.status_code == 403:
+         if BLAH.status_code == 403:
             ban_info = BLAH.json()
             if ban_info.get('errorCode') == 1002:
                 ban_message = ban_info.get('errorMessage', "No ban message provided.")
