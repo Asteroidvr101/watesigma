@@ -120,6 +120,25 @@ def cfbn():
     result = 0 if name not in BadNames else 2
     return jsonify({"Message": "the name thingy worked!", "Name": name, "Result": result})
 
+@app.route("/api/ConsumeOculusIAP", methods=["POST"])
+def consume_oculus_iap():
+    rjson = request.get_json()
+
+    access_token = rjson.get("userToken")
+    user_id = rjson.get("userID")
+    nonce = rjson.get("nonce")
+    sku = rjson.get("sku")
+
+    response = requests.post(
+        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={settings.ApiKey}",
+        headers={"content-type": "application/json"}
+    )
+
+    if response.json().get("success"):
+        return jsonify({"result": True})
+    else:
+        return jsonify({"error": True})
+
 @app.route("/gaa", methods=["POST", "GET"])
 def gaa():
     getjson = request.get_json()["FunctionResult"]
