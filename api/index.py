@@ -16,7 +16,7 @@ def authjh():
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['GET'])
+@app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
     data = request.get_json()
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
