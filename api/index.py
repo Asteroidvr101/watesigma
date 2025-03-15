@@ -16,9 +16,9 @@ def authjh():
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['POST'])
+@app.route('/api/PlayFabAuthentication', methods=['POST', 'GET'])
 def PlayFabAuthentication():
-    data = request.get_json()  # or request.form if not JSON
+    data = request.get_json()
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
             "BanMessage": "Your account has been traced and you have been banned.",
