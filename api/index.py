@@ -3,9 +3,8 @@ import random
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-title = "7AF94"
-secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7" #idk why it said secfret
-ApiKey = "OC|9837791239572874|4523778edb61de7362b2843a78428242"
+title = ""
+secretkey = "" #idk why it said secfret
 coems = {} # bro why does this have ;
 
 
@@ -27,18 +26,6 @@ def PlayFabAuthentication():
     OculusId: str = data.get("OculusId", "Null")
     Platform: str = data.get("Platform", "Null")
 
-    BLAH = requests.post(
-        url=
-f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
-        json={
-            "ServerCustomId": CustomId,
-            "CreateAccount": True
-        },
-        headers={
-            "content-type": "application/json",
-            "x-secretkey": secretkey
-        })
-  
     BLAH = requests.post(
         url=
 f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
@@ -94,7 +81,7 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         else:
             return jsonify({"Message": "Failed"}), 400
     else:
-        if BLAH.status_code == 403:
+           if BLAH.status_code == 403:
             ban_info = BLAH.json()
             if ban_info.get('errorCode') == 1002:
                 ban_message = ban_info.get('errorMessage', "No ban message provided.")
@@ -161,25 +148,6 @@ def gaa():
 def saa():
     getjson = request.get_json()["FunctionResult"]
     return jsonify(getjson) #qwizx did this on purpose bro i swear
-
-@app.route("/api/ConsumeOculusIAP", methods=["POST"])
-def consume_oculus_iap():
-    rjson = request.get_json()
-
-    access_token = rjson.get("userToken")
-    user_id = rjson.get("userID")
-    nonce = rjson.get("nonce")
-    sku = rjson.get("sku")
-
-    response = requests.post(
-        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={settings.ApiKey}",
-        headers={"content-type": "application/json"}
-    )
-
-    if response.json().get("success"):
-        return jsonify({"result": True})
-    else:
-        return jsonify({"error": True})
 
 @app.route("/grn", methods=["POST", "GET"])
 def grn():
