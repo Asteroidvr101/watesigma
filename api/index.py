@@ -23,20 +23,6 @@ def PlayFabAuthentication():
             "BanMessage": "Your account has been traced and you have been banned.",
             "BanExpirationTime": "Indefinite"
         }), 403
-
-    oculus_response = requests.post("https://graph.oculus.com/user_nonce_validate", json={
-        "access_token": f"",
-        "nonce": nonce,
-        "user_id": oculus_id
-    })
-    print(oculus_response.status_code)
-    print(oculus_response)
-    if oculus_response.status_code != 200 or not oculus_response.json().get("is_valid", False):
-        return jsonify({
-            "BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-        }), 403
-
     data = request.get_json()
 
     print(data)
