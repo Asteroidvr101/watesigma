@@ -79,8 +79,6 @@ f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
                 "EntityType": EntityType
             }), 200
         else:
-            return jsonify({"Message": "Failed"}), 400
-    else:
            if BLAH.status_code == 403:
             ban_info = BLAH.json()
             if ban_info.get('errorCode') == 1002:
