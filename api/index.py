@@ -18,12 +18,13 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=['POST'])
 def PlayFabAuthentication():
-    data = request.get_json()
+    data = request.get_json()  # or request.form if not JSON
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
             "BanMessage": "Your account has been traced and you have been banned.",
             "BanExpirationTime": "Indefinite"
         }), 403
+    return jsonify({"message": "Success"}), 200
     print(data)
 
     BLAH = requests.post(
