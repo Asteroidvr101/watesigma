@@ -24,25 +24,25 @@ def PlayFabAuthentication():
      AppId: str = data.get("AppId", "Null")
      nocustoms = {"OCULUS0", "HACKER", "DLL"}
 
-    if CustomId is None:
+    if CustomId == "Null":
         return jsonify({
             "BanMessage": "Unable To Auth",
             "BanExpirationTime": "1"
             )}, 403
                        
-    if Nonce is None:
+    if Nonce == "Null":
         return jsonify({
             "BanMessage": "Unable To Auth",
             "BanExpirationTime": "1"
             )}, 403
                        
-    if OculusId is None:
+    if OculusId == "Null":
         return jsonify({
             "BanMessage": "Unable To Auth",
             "BanExpirationTime": "1"
             )}, 403
 
-    if Platform is None:
+    if Platform == "Null":
          return jsonify({
             "BanMessage": "Unable To Auth",
             "BanExpirationTime": "1"
