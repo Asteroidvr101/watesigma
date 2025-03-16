@@ -72,8 +72,7 @@ def PlayFabAuthentication():
             "BanMessage": "Your account has been traced and you have been banned.",
             "BanExpirationTime": "Indefinite"
         }), 403
-
-    if 
+    
     data = request.get_json()
     print(data)
     BLAH = requests.post(
