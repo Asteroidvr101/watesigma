@@ -26,32 +26,35 @@ def PlayFabAuthentication():
     banned_customids = {"OCULUS", "DLL", "HACKER"}
     banned_platforms = {"Steam", "PC"}
 
-    if CustomId is None:
-        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoCustomId"}), 400
+       # Check for required parameters
+    if not CustomId:
+        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoCustomId"}), 400
 
-    if Nonce is None:
-        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoNonce"}), 400
+    if not Nonce:
+        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoNonce"}), 400
 
-    if OculusId is None:
-        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoOculusId"}), 400
+    if not OculusId:
+        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoOculusId"}), 400
 
-    if Platform is None:
-        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoPlatform"}), 400
-
+    if not Platform:
+        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoPlatform"}), 400
+    
+    # Validate against banned CustomId and platform
     if CustomId in banned_customids:
-        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "BannedCustomId"}), 403
 
     if "OC" not in CustomId:
-        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "InvalidCustomId"}), 403
 
     if Platform in banned_platforms:
-        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "BannedPlatform"}), 403
 
-    if not Platform == "Quest":
-        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+    if Platform != "Quest":
+        return jsonify({"Message": "Invalid platform. Access denied.", "Error": "InvalidPlatform"}), 403
 
-    if 'UnityPlayer' not in request.headers.get('User-Agent', ' '):
-        return jsonify({"Message": ":skull: You Are Not Him Buddy", "Error": "Bad Fucker Here"}), 403
+    # Check for UnityPlayer in the User-Agent
+    if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
+        return jsonify({"Message": ":skull: You are not authorized to access this endpoint", "Error": "UnauthorizedUser"}), 403
 
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
