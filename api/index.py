@@ -66,7 +66,6 @@ def PlayFabAuthentication():
             "BanExpirationTime": "Indefinite"
             )}, 403
     
-    
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
             "BanMessage": "Your account has been traced and you have been banned.",
