@@ -15,17 +15,8 @@ def authjh():
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['POST', 'GET'])
+@app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
-   # Log incoming headers for debugging
-    print("Incoming Headers:", request.headers)
-
-    # Read JSON data and handle parsing errors
-    data = request.get_json(silent=True)  # 'silent=True' prevents errors from being raised on parsing issues
-    
-    if data is None:
-        return jsonify({"Message": "Invalid JSON", "Error": "Empty or malformed JSON"}), 400
-    
     data = request.get_json()
     print(data)
     CustomId: str = data.get("CustomId", "Null")
