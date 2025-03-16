@@ -17,12 +17,55 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
-    AppId: str = data.get("AppId", "Null")
+     CustomId: str = data.get("CustomId", "Null")
+     Nonce: str = data.get("Nonce", "Null")
+     OculusId: str = data.get("OculusId", "Null")
+     Platform: str = data.get("Platform", "Null")
+     AppId: str = data.get("AppId", "Null")
+     nocustoms = {"OCULUS0", "HACKER", "DLL"}
 
+    if CustomId is None:
+        return jsonify({
+            "BanMessage": "Unable To Auth",
+            "BanExpirationTime": "1"
+        )}, 403
+                       
+    if Nonce is None:
+        return jsonify({
+            "BanMessage": "Unable To Auth",
+            "BanExpirationTime": "1"
+        )}, 403
+                       
+    if OculusId is None:
+        return jsonify({
+            "BanMessage": "Unable To Auth",
+            "BanExpirationTime": "1"
+        )}, 403
+
+    if Platform is None:
+         return jsonify({
+            "BanMessage": "Unable To Auth",
+            "BanExpirationTime": "1"
+        )}, 403
+
+    if AppId != title:
+        return jsonify({
+            "BanMessage": "Unable To Auth",
+            "BanExpirationTime": "1"
+        )}, 403
+
+    if CustomId in nocustoms:
+        return jsonify({
+            "BanMessage": ":skull: Dumbass",
+            "BanExpirationTime": "Indefinite"
+        )}, 403
+
+    if Platform != "Quest":
+        return jsonify({
+            "BanMessage": ":skull: Dumbass",
+            "BanExpirationTime": "Indefinite"
+        )}, 403
+    
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
             "BanMessage": "Your account has been traced and you have been banned.",
