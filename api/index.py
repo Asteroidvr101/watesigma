@@ -23,11 +23,11 @@ def PlayFabAuthentication():
     Platform: str = data.get("Platform", "Null")
     AppId: str = data.get("AppId", "Null")
 
-       if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
-            return jsonify({
-                "BanMessage": "Your account has been traced and you have been banned.",
-                "BanExpirationTime": "Indefinite"
-            }), 403
+    if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
+        return jsonify({
+            "BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+        }), 403
     
     data = request.get_json()    
     print(data)
