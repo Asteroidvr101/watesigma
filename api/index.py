@@ -41,7 +41,7 @@ def PlayFabAuthentication():
     if CustomId in banned_customids:
         return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
 
-    if not "OC" CustomId:
+    if "OC" not in CustomId:
         return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
 
     if Platform in banned_platforms:
