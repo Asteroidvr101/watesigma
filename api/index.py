@@ -15,15 +15,43 @@ def authjh():
 def no():
     return "yesnt"
 
-@app.route('/api/PlayFabAuthentication', methods=['POST'])
+@app.route('/api/PlayFabAuthentication', methods=['POST', 'GET'])
 def PlayFabAuthentication():
     data = request.get_json()
     print(data)
-
     CustomId: str = data.get("CustomId", "Null")
     Nonce: str = data.get("Nonce", "Null")
     OculusId: str = data.get("OculusId", "Null")
     Platform: str = data.get("Platform", "Null")
+    banned_customids = {"OCULUS0", "DLL", "HACKER"}
+    banned_platforms = {"Steam", "PC"}
+
+    if CustomId is None:
+        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoCustomId"}), 400
+
+    if Nonce is None:
+        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoNonce"}), 400
+
+    if OculusId is None:
+        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoOculusId"}), 400
+
+    if Platform is None:
+        return jsonify({"Message": "Whoops A Fucky Wucky Happened", "Error": "BadRequest-NoPlatform"}), 400
+
+    if CustomId in banned_customids:
+        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+
+    if not "OC" CustomId:
+        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+
+    if Platform in banned_platforms:
+        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+
+    if not Platform == "Quest":
+        return jsonify({"Message": "LOL TRYING TO HACK THE GAME ARE WE?", "Error": "Bad Fucker Here"}), 403
+
+    if 'UnityPlayer' not in request.headers.get('User-Agent', ' '):
+        return jsonify({"Message": ":skull: You Are Not Him Buddy", "Error": "Bad Fucker Here"}), 403
 
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
