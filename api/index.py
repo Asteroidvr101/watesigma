@@ -17,12 +17,6 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
-    AppId: str = data.get("AppId", "Null")
-    nocustoms = {"OCULUS0", "HACKER", "DLL"}
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
             "BanMessage": "Your account has been traced and you have been banned.",
