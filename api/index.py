@@ -30,11 +30,11 @@ def PlayFabAuthentication():
     Platform = data.get("Platform", "Null")
     AppId = data.get("AppId", "Null")
 
-    if CustomId is None:
+     if CustomId is None:
         return jsonify({
-            "BanMessage": "HEHEHEHE",
+            "BanMessage": "Your account has been traced and you have been banned.",
             "BanExpirationTime": "Indefinite"
-        )}, 403
+        }), 403
     print(data)
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
