@@ -17,14 +17,7 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
-    data = request.get_json()
-
-     CustomId: str = data.get("CustomId", "Null")
-     Nonce: str = data.get("Nonce", "Null")
-     OculusId: str = data.get("OculusId", "Null")
-     Platform: str = data.get("Platform", "Null")
-     AppId: str = data.get("AppId", "Null")
-    
+    data = request.get_json()    
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
