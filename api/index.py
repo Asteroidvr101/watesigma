@@ -41,20 +41,30 @@ def PlayFabAuthentication():
     
     # Validate against banned CustomId and platform
     if CustomId in banned_customids:
-        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "BannedCustomId"}), 403
+        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+}), 403
 
     if "OC" not in CustomId:
-        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "InvalidCustomId"}), 403
+        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+}), 403
 
     if Platform in banned_platforms:
-        return jsonify({"Message": "Suspicious activity detected. Access denied.", "Error": "BannedPlatform"}), 403
+        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+}), 403
 
     if Platform != "Quest":
-        return jsonify({"Message": "Invalid platform. Access denied.", "Error": "InvalidPlatform"}), 403
+        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+}), 403
 
     # Check for UnityPlayer in the User-Agent
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
-        return jsonify({"Message": ":skull: You are not authorized to access this endpoint", "Error": "UnauthorizedUser"}), 403
+        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+}), 403
 
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
