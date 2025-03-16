@@ -19,53 +19,6 @@ def no():
 def PlayFabAuthentication():
     data = request.get_json()
     print(data)
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
-    banned_customids = {"OCULUS", "DLL", "HACKER"}
-    banned_platforms = {"Steam", "PC"}
-
-       # Check for required parameters
-    if not CustomId:
-        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoCustomId"}), 400
-
-    if not Nonce:
-        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoNonce"}), 400
-
-    if not OculusId:
-        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoOculusId"}), 400
-
-    if not Platform:
-        return jsonify({"Message": "Whoops, something went wrong", "Error": "BadRequest-NoPlatform"}), 400
-    
-    # Validate against banned CustomId and platform
-    if CustomId in banned_customids:
-        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-}), 403
-
-    if "OC" not in CustomId:
-        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-}), 403
-
-    if Platform in banned_platforms:
-        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-}), 403
-
-    if Platform != "Quest":
-        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-}), 403
-
-    # Check for UnityPlayer in the User-Agent
-    if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
-        return jsonify({"BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-}), 403
-
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
