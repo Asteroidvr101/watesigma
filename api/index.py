@@ -32,7 +32,7 @@ def PlayFabAuthentication():
 
     if CustomId is None:
         return jsonify({
-            "BanMessage": "Your account has been traced and you have been banned.",
+            "BanMessage": "Your account has been traced and you have been banned :skull:.",
             "BanExpirationTime": "Indefinite"
         }), 403
     print(data)
