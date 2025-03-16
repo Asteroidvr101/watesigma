@@ -23,48 +23,6 @@ def PlayFabAuthentication():
      Platform: str = data.get("Platform", "Null")
      AppId: str = data.get("AppId", "Null")
      nocustoms = {"OCULUS0", "HACKER", "DLL"}
-
-    if CustomId == "Null":
-        return jsonify({
-            "BanMessage": "Unable To Auth",
-            "BanExpirationTime": "1"
-            )}, 403
-                       
-    if Nonce == "Null":
-        return jsonify({
-            "BanMessage": "Unable To Auth",
-            "BanExpirationTime": "1"
-            )}, 403
-                       
-    if OculusId == "Null":
-        return jsonify({
-            "BanMessage": "Unable To Auth",
-            "BanExpirationTime": "1"
-            )}, 403
-
-    if Platform == "Null":
-         return jsonify({
-            "BanMessage": "Unable To Auth",
-            "BanExpirationTime": "1"
-            )}, 403
-
-    if AppId != title:
-        return jsonify({
-            "BanMessage": "Unable To Auth",
-            "BanExpirationTime": "1"
-            )}, 403
-
-    if CustomId in nocustoms:
-        return jsonify({
-            "BanMessage": ":skull: Dumbass",
-            "BanExpirationTime": "Indefinite"
-            )}, 403
-
-    if Platform != "Quest":
-        return jsonify({
-            "BanMessage": ":skull: Dumbass",
-            "BanExpirationTime": "Indefinite"
-            )}, 403
     
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
