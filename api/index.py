@@ -22,14 +22,7 @@ def PlayFabAuthentication():
      OculusId: str = data.get("OculusId", "Null")
      Platform: str = data.get("Platform", "Null")
      AppId: str = data.get("AppId", "Null")
-     nocustoms = {"OCULUS0", "HACKER", "DLL"}
-    
-    if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
-        return jsonify({
-            "BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-        }), 403
-    
+
     data = request.get_json()
     print(data)
     BLAH = requests.post(
