@@ -18,6 +18,7 @@ def no():
 @app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
     data = request.get_json()    
+    print(data)
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
         json={
