@@ -6,11 +6,6 @@ app = Flask(__name__)
 title = "7AF94"
 secretkey = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7"  
 ApiKey = "OC|9837791239572874|4523778edb61de7362b2843a78428242"
-CustomId = data.get("CustomId", "Null")
-Nonce = data.get("Nonce", "Null")
-OculusId = data.get("OculusId", "Null")
-Platform = data.get("Platform", "Null")
-AppId = data.get("AppId", "Null")
 coems = {}
 
 def authjh():
@@ -28,7 +23,18 @@ def PlayFabAuthentication():
             "BanExpirationTime": "Indefinite"
         }), 403
     
-    data = request.get_json()    
+    data = request.get_json()
+    CustomId = data.get("CustomId", "Null")
+    Nonce = data.get("Nonce", "Null")
+    OculusId = data.get("OculusId", "Null")
+    Platform = data.get("Platform", "Null")
+    AppId = data.get("AppId", "Null")
+
+    if CustomId is None:
+        return jsonify({
+            "BanMessage": "HEHEHEHE",
+            "BanExpirationTime": "Indefinite"
+        )}, 403
     print(data)
     BLAH = requests.post(
         url=f"https://{title}.playfabapi.com/Server/LoginWithServerCustomId",
