@@ -17,6 +17,18 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=["POST", "GET"])
 def PlayFabAuthentication():
+    CustomId: str = data.get("CustomId", "Null")
+    Nonce: str = data.get("Nonce", "Null")
+    OculusId: str = data.get("OculusId", "Null")
+    Platform: str = data.get("Platform", "Null")
+    AppId: str = data.get("AppId", "Null")
+
+    if 'UnityPlayer' not in request.headers.get('User-Agent', ' '):
+        return jsonify({
+            "BanMessage": "Your account has been traced and you have been banned.",
+            "BanExpirationTime": "Indefinite"
+        }), 403
+    
     data = request.get_json()    
     print(data)
     BLAH = requests.post(
@@ -30,18 +42,6 @@ def PlayFabAuthentication():
             "x-secretkey": secretkey
         }
     )
-
-    CustomId: str = data.get("CustomId", "Null")
-    Nonce: str = data.get("Nonce", "Null")
-    OculusId: str = data.get("OculusId", "Null")
-    Platform: str = data.get("Platform", "Null")
-    AppId: str = data.get("AppId", "Null")
-
-    if 'UnityPlayer' not in request.headers.get('User-Agent', ' '):
-        return jsonify({
-            "BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
-        }), 403
     
     if BLAH.status_code == 200: 
         print("successful login chat!")
