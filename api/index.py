@@ -23,7 +23,7 @@ def PlayFabAuthentication():
     Nonce: str = data.get("Nonce", "Null")
     OculusId: str = data.get("OculusId", "Null")
     Platform: str = data.get("Platform", "Null")
-    banned_customids = {"OCULUS0", "DLL", "HACKER"}
+    banned_customids = {"OCULUS", "DLL", "HACKER"}
     banned_platforms = {"Steam", "PC"}
 
     if CustomId is None:
