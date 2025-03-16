@@ -122,6 +122,25 @@ def real():
     sigmarizzauth = e.json().get("data", "").get("Data", "")
     return jsonify(sigmarizzauth)
 
+@app.route("/api/ConsumeOculusIAP", methods=["POST"])
+def consume_oculus_iap():
+    rjson = request.get_json()
+
+    access_token = rjson.get("userToken")
+    user_id = rjson.get("userID")
+    nonce = rjson.get("nonce")
+    sku = rjson.get("sku")
+
+    response = requests.post(
+        url=f"https://graph.oculus.com/consume_entitlement?nonce={nonce}&user_id={user_id}&sku={sku}&access_token={settings.ApiKey}",
+        headers={"content-type": "application/json"}
+    )
+
+    if response.json().get("success"):
+        return jsonify({"result": True})
+    else:
+        return jsonify({"error": True})
+
 @app.route("/cbfn", methods=["POST","GET"])
 def cfbn():
     name = request.args.get('name')
