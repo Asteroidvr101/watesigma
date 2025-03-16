@@ -17,6 +17,16 @@ def no():
 
 @app.route('/api/PlayFabAuthentication', methods=['POST', 'GET'])
 def PlayFabAuthentication():
+    # Log incoming headers for debugging
+    print("Incoming Headers:", request.headers)
+
+    # Attempt to parse JSON and handle potential parsing errors
+    try:
+        data = request.get_json(force=True)  # 'force=True' means it will try to parse the incoming data as JSON
+    except Exception as e:
+        return jsonify({"Message": "Invalid JSON", "Error": str(e)}), 400
+
+    print(data)
     data = request.get_json()
     print(data)
     CustomId: str = data.get("CustomId", "Null")
