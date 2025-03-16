@@ -60,7 +60,7 @@ def PlayFabAuthentication():
             "BanExpirationTime": "Indefinite"
         }), 403
 
-    if CustomId.startswith("OCULUS"):
+    if not CustomId.startswith("OCULUS"):
         return jsonify({
             "BanMessage": "Unable To Auth.",
             "BanExpirationTime": "Indefinite"
