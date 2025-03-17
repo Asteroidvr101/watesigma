@@ -19,8 +19,8 @@ def no():
 def PlayFabAuthentication():
     if 'UnityPlayer' not in request.headers.get('User-Agent', ''):
         return jsonify({
-            "BanMessage": "Your account has been traced and you have been banned.",
-            "BanExpirationTime": "Indefinite"
+            "BanMessage": "LOL Trying To Hack The Game I See?",
+            "BanExpirationTime": "Permanent"
         }), 403
     
     data = request.get_json()
