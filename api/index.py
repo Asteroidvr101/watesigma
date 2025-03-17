@@ -33,37 +33,37 @@ def PlayFabAuthentication():
     if CustomId is None:
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
 
     if Nonce is None:
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
 
     if OculusId is None:
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
 
     if Platform is None:
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
 
     if AppId != title:
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
 
     if not CustomId.startswith("OCULUS"):
         return jsonify({
             "BanMessage": "Unable To Auth.",
-            "BanExpirationTime": "Indefinite"
+            "BanExpirationTime": "Permanent"
         }), 403
     print(data)
     BLAH = requests.post(
