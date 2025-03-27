@@ -29,10 +29,6 @@ polling_data = [
     }
 ]
 
-@app.route("/api/CachePlayFabId", methods=["GET", "POST"])
-def cache_playfab_id():
-    return 'PLAYFAB!!', 200
-
 @app.route("/api/PlayFabAuthentication", methods=["GET", "POST"])
 def authenticate():
     user_agent = request.headers.get('User-Agent', '')
