@@ -7,6 +7,7 @@ class GameConfig:
     title_id = "7AF94"
     secret_key = "GBIPB74594RF9UDYHIAKASEJ1WG66KWWF4FAPKJK1WYZCC94S7"
     api_key = "OC|9837791239572874|4523778edb61de7362b2843a78428242"
+    coems = {}
 
     @staticmethod
     def auth_headers():
@@ -95,6 +96,12 @@ def get_title_data():
     if title_data_response.status_code == 200:
         return jsonify(title_data_response.json().get("data", {}).get("Data", {}))
     return jsonify({}), title_data_response.status_code
+
+@app.route("/api/CachePlayFabId", methods=["POST"])
+def cpi():
+    getjson = request.get_json()
+    coems[getjson.get("PlayFabId")] = getjson
+    return jsonify({"Message": "worked1!!"}), 200
 
 @app.route("/api/ConsumeOculusIAP", methods=["POST"])
 def consume_iap():
