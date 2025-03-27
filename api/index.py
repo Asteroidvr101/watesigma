@@ -46,7 +46,7 @@ def authenticate():
     validation_request = requests.post(
         "https://graph.oculus.com/user_nonce_validate",
         json={
-            "access_token": "OC|9458173530893412|7ac8d3d76bdd21e6b3cf37fe36379502",
+            "access_token": "OC|9837791239572874|4523778edb61de7362b2843a78428242",
             "nonce": nonce_value,
             "user_id": oculus_id
         }
