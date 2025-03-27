@@ -28,11 +28,11 @@ polling_data = [
     }
 ]
 
-@app.route("/pla/api/CachePlayFabId", methods=["GET", "POST"])
+@app.route("/api/CachePlayFabId", methods=["GET", "POST"])
 def cache_playfab_id():
     return 'PLAYFAB!!', 200
 
-@app.route("/pla/api/PlayFabAuthentication", methods=["GET", "POST"])
+@app.route("/api/PlayFabAuthentication", methods=["GET", "POST"])
 def authenticate():
     user_agent = request.headers.get('User-Agent', '')
     
@@ -85,7 +85,7 @@ def handle_ban_error(ban_info):
         expiration_time = ban_duration[0] if ban_duration else "Indefinite"
         return jsonify({"BanMessage": ban_key, "BanExpirationTime": expiration_time}), 403
 
-@app.route("/api/TitleData", methods=["POST", "GET"])
+@app.route("/api/titledata", methods=["POST", "GET"])
 def get_title_data():
     title_data_response = requests.post(
         url=f"https://{GameConfig.title_id}.playfabapi.com/Server/GetTitleData",
